@@ -1,5 +1,14 @@
 import * as core from '@actions/core'
+import * as crypto from "crypto";
+import * as exec from '@actions/exec';
+import * as io from '@actions/io';
 import {wait} from './wait'
+
+import { FormatType, SecretParser } from 'actions-secret-parser';
+
+var azPath: string;
+var prefix = !!process.env.AZURE_HTTP_USER_AGENT ? `${process.env.AZURE_HTTP_USER_AGENT}` : "";
+
 
 async function run(): Promise<void> {
   try {
@@ -11,8 +20,25 @@ async function run(): Promise<void> {
     core.debug(new Date().toTimeString())
 
     core.setOutput('time', new Date().toTimeString())
+    // Set user agent varable
+    let usrAgentRepo = crypto.createHash('sha256').update(`${process.env.GITHUB_REPOSITORY}`).digest('hex');
+    let actionName = 'AzureLogin';
+    let userAgentString = (!!prefix ? `${prefix}+` : '') + `GITHUBACTIONS_${actionName}_${usrAgentRepo}`;
+    core.exportVariable('AZURE_HTTP_USER_AGENT', userAgentString);
+
+   
+    console.log(`userAgentString:${userAgentString}.`);    
+
   } catch (error) {
     core.setFailed(error.message)
+  }
+}
+async function executeAzCliCommand(command: string) {
+  try {
+      await exec.exec(`"${azPath}" ${command}`, [],  {}); 
+  }
+  catch(error) {
+      throw new Error(error);
   }
 }
 
