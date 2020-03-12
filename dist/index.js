@@ -5622,7 +5622,8 @@ const github = __importStar(__webpack_require__(469));
 const wait_1 = __webpack_require__(521);
 const secret_parser_1 = __webpack_require__(235);
 let azPath;
-let prefix = !!process.env.AZURE_HTTP_USER_AGENT ? `${process.env.AZURE_HTTP_USER_AGENT}` : "";
+var bAZURE_HTTP_USER_AGENT = !!process.env.AZURE_HTTP_USER_AGENT;
+const prefix = bAZURE_HTTP_USER_AGENT ? `${process.env.AZURE_HTTP_USER_AGENT}` : "";
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
