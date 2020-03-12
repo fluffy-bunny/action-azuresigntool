@@ -1,9 +1,9 @@
 import * as core from '@actions/core'
  
-function ToAny(a: unknown) {return a as any;}
-var jp = ToAny(require('jsonpath'))
-var xpath = ToAny(require('xpath'))
-var domParser = ToAny(require('xmldom')).DOMParser
+function ToAny(a: unknown): any {return a as any}
+const jp = ToAny(require('jsonpath'))
+const xpath = ToAny(require('xpath'))
+const domParser = ToAny(require('xmldom')).DOMParser
 
 
 export enum FormatType {
