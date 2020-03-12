@@ -7,8 +7,8 @@ import {wait} from './wait'
 
 import { FormatType, SecretParser } from './secret-parser'
 
-var azPath: string;
-var prefix = !!process.env.AZURE_HTTP_USER_AGENT ? `${process.env.AZURE_HTTP_USER_AGENT}` : "";
+let azPath: string;
+let prefix = !!process.env.AZURE_HTTP_USER_AGENT ? `${process.env.AZURE_HTTP_USER_AGENT}` : "";
 
 
 async function run(): Promise<void> {

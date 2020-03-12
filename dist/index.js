@@ -5621,8 +5621,8 @@ const io = __importStar(__webpack_require__(1));
 const github = __importStar(__webpack_require__(469));
 const wait_1 = __webpack_require__(521);
 const secret_parser_1 = __webpack_require__(235);
-var azPath;
-var prefix = !!process.env.AZURE_HTTP_USER_AGENT ? `${process.env.AZURE_HTTP_USER_AGENT}` : "";
+let azPath;
+let prefix = !!process.env.AZURE_HTTP_USER_AGENT ? `${process.env.AZURE_HTTP_USER_AGENT}` : "";
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -5805,9 +5805,17 @@ exports.MappingList = MappingList;
 
 "use strict";
 
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-var core = __webpack_require__(470);
-var jp = __webpack_require__(374);
+const core = __importStar(__webpack_require__(470));
+function trick(a) { return a; }
+var jp = trick(__webpack_require__(374));
 var xpath = __webpack_require__(769);
 var domParser = __webpack_require__(721).DOMParser;
 var FormatType;

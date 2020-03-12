@@ -1,5 +1,8 @@
-var core = require('@actions/core');
-var jp = require('jsonpath');
+import * as core from '@actions/core'
+ 
+function trick(a: unknown) {return a as any;}
+var jp = trick(require('jsonpath'));
+
 var xpath = require('xpath');
 var domParser = require('xmldom').DOMParser;
 
