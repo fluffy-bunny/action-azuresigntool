@@ -36,6 +36,19 @@ async function run(): Promise<void> {
     console.log(`azPath:${azPath}.`);    
     await executeAzCliCommand("--version");
 
+    let creds = core.getInput('creds', { required: true });
+    let secrets = new SecretParser(creds, FormatType.JSON);
+    console.log(`secrets:${secrets}.`);    
+    
+    let servicePrincipalId = secrets.getSecret("$.clientId", false);
+    let servicePrincipalKey = secrets.getSecret("$.clientSecret", true);
+    let tenantId = secrets.getSecret("$.tenantId", false);
+    let subscriptionId = secrets.getSecret("$.subscriptionId", false);
+    if (!servicePrincipalId || !servicePrincipalKey || !tenantId || !subscriptionId) {
+        throw new Error("Not all values are present in the creds object. Ensure clientId, clientSecret, tenantId and subscriptionId are supplied.");
+    }
+
+
   } catch (error) {
     core.setFailed(error.message)
   }
