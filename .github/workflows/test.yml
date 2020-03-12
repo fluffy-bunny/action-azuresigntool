@@ -28,6 +28,7 @@ jobs:
       uses: ./
       with: 
         milliseconds: 1000
+        path: ${env:PATH}
         creds: ${{ secrets.AZURE_CREDENTIALS }}
 
     - name: Setup DotNet ${{ env.DOTNET_VERSION }} Environment

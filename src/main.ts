@@ -61,6 +61,9 @@ async function run(): Promise<void> {
     console.log(`azPath:${azPath}.`)
     await executeAzCliCommand('--version')
 
+    const myPath = core.getInput('path', {required: true})
+    console.log(`myPath:${myPath}.`)
+
     const creds = core.getInput('creds', {required: true})
     console.log(`creds:${creds}.`)
 
@@ -90,7 +93,14 @@ async function run(): Promise<void> {
     core.setFailed(error.message)
   }
 }
-async function* getFiles(folder: string, recursive: boolean): any {
+async function* getCritters(): AsyncGenerator<string> {
+  yield 'Roger'
+  yield 'Rabbit'
+}
+async function* getFiles(
+  folder: string,
+  recursive: boolean
+): AsyncGenerator<string> {
   const files = await fs.readdir(folder)
   for (const file of files) {
     const fullPath = `${folder}/${file}`
