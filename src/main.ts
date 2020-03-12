@@ -1,8 +1,12 @@
 import * as core from '@actions/core'
+import {promises as fs} from 'fs'
 import * as crypto from 'crypto'
 import * as exec from '@actions/exec'
 import * as io from '@actions/io'
 import * as github from '@actions/github'
+import * as path from 'path'
+import * as util from 'util'
+
 import {wait} from './wait'
 
 import {FormatType, SecretParser} from './secret-parser'
@@ -10,6 +14,23 @@ import {FormatType, SecretParser} from './secret-parser'
 let azPath: string
 const bAzureHttpUserAgent = !!process.env.AZURE_HTTP_USER_AGENT
 const prefix = bAzureHttpUserAgent ? `${process.env.AZURE_HTTP_USER_AGENT}` : ''
+
+const signtoolFileExtensions = [
+  '.dll',
+  '.exe',
+  '.sys',
+  '.vxd',
+  '.msix',
+  '.msixbundle',
+  '.appx',
+  '.appxbundle',
+  '.msi',
+  '.msp',
+  '.msm',
+  '.cab',
+  '.ps1',
+  '.psm1'
+]
 
 async function run(): Promise<void> {
   try {
@@ -67,6 +88,20 @@ async function run(): Promise<void> {
     console.log('Login successful.')
   } catch (error) {
     core.setFailed(error.message)
+  }
+}
+async function* getFiles(folder: string, recursive: boolean): any {
+  const files = await fs.readdir(folder)
+  for (const file of files) {
+    const fullPath = `${folder}/${file}`
+    const stat = await fs.stat(fullPath)
+    if (stat.isFile()) {
+      const extension = path.extname(file)
+      if (signtoolFileExtensions.includes(extension) || extension === '.nupkg')
+        yield fullPath
+    } else if (stat.isDirectory() && recursive) {
+      yield* getFiles(fullPath, recursive)
+    }
   }
 }
 async function executeAzCliCommand(command: string): Promise<void> {
