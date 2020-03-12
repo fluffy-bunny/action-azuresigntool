@@ -5,7 +5,7 @@ import * as io from '@actions/io';
 import * as github from '@actions/github';
 import {wait} from './wait'
 
-import { FormatType, SecretParser } from 'actions-secret-parser';
+import { FormatType, SecretParser } from './secret-parser'
 
 var azPath: string;
 var prefix = !!process.env.AZURE_HTTP_USER_AGENT ? `${process.env.AZURE_HTTP_USER_AGENT}` : "";
