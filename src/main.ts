@@ -34,7 +34,7 @@ async function run(): Promise<void> {
 
     azPath = await io.which("az", true);
     console.log(`azPath:${azPath}.`);    
-    
+    await executeAzCliCommand("--version");
 
   } catch (error) {
     core.setFailed(error.message)

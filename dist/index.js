@@ -4426,6 +4426,7 @@ function run() {
             console.log(`userAgentString:${userAgentString}.`);
             azPath = yield io.which("az", true);
             console.log(`azPath:${azPath}.`);
+            yield executeAzCliCommand("--version");
         }
         catch (error) {
             core.setFailed(error.message);
