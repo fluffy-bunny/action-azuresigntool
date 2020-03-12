@@ -1,10 +1,10 @@
 import * as core from '@actions/core'
  
-function trick(a: unknown) {return a as any;}
-var jp = trick(require('jsonpath'));
+function ToAny(a: unknown) {return a as any;}
+var jp = ToAny(require('jsonpath'))
+var xpath = ToAny(require('xpath'))
+var domParser = ToAny(require('xmldom')).DOMParser
 
-var xpath = require('xpath');
-var domParser = require('xmldom').DOMParser;
 
 export enum FormatType {
     "JSON",

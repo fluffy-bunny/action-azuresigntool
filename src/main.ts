@@ -5,14 +5,14 @@ import * as io from '@actions/io'
 import * as github from '@actions/github'
 import {wait} from './wait'
 
-import { FormatType, SecretParser } from './secret-parser'
+import {FormatType, SecretParser} from './secret-parser'
 
 let azPath: string
 const bAzureHttpUserAgent = !!process.env.AZURE_HTTP_USER_AGENT
 const prefix = bAzureHttpUserAgent ? `${process.env.AZURE_HTTP_USER_AGENT}` : ''
 
 async function run(): Promise<void> {
-  try {    
+  try {
     const payload = JSON.stringify(github.context.payload, undefined, 2)
     console.log(`The event payload: ${payload}`)
 
@@ -29,15 +29,15 @@ async function run(): Promise<void> {
     const actionName = 'AzureLogin'
     const userAgentString = (!!prefix ? `${prefix}+` : '') + `GITHUBACTIONS_${actionName}_${usrAgentRepo}`
     core.exportVariable('AZURE_HTTP_USER_AGENT', userAgentString)
-    console.log(`userAgentString:${userAgentString}.`)    
+    console.log(`userAgentString:${userAgentString}.`)
 
-    azPath = await io.which("az", true)
-    console.log(`azPath:${azPath}.`)  
+    azPath = await io.which('az', true)
+    console.log(`azPath:${azPath}.`)
     await executeAzCliCommand("--version")
 
     let creds = core.getInput('creds', { required: true })
-    console.log(`creds:${creds}.`)  
-    
+    console.log(`creds:${creds}.`)
+
     let secrets = new SecretParser(creds, FormatType.JSON)
 
     let servicePrincipalId = secrets.getSecret("$.clientId", false)

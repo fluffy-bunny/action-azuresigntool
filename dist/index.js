@@ -5641,7 +5641,7 @@ function run() {
             const userAgentString = (!!prefix ? `${prefix}+` : '') + `GITHUBACTIONS_${actionName}_${usrAgentRepo}`;
             core.exportVariable('AZURE_HTTP_USER_AGENT', userAgentString);
             console.log(`userAgentString:${userAgentString}.`);
-            azPath = yield io.which("az", true);
+            azPath = yield io.which('az', true);
             console.log(`azPath:${azPath}.`);
             yield executeAzCliCommand("--version");
             let creds = core.getInput('creds', { required: true });
@@ -5815,10 +5815,10 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const core = __importStar(__webpack_require__(470));
-function trick(a) { return a; }
-var jp = trick(__webpack_require__(374));
-var xpath = __webpack_require__(769);
-var domParser = __webpack_require__(721).DOMParser;
+function ToAny(a) { return a; }
+var jp = ToAny(__webpack_require__(374));
+var xpath = ToAny(__webpack_require__(769));
+var domParser = ToAny(__webpack_require__(721)).DOMParser;
 var FormatType;
 (function (FormatType) {
     FormatType[FormatType["JSON"] = 0] = "JSON";
