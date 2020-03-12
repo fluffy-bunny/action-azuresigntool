@@ -4402,6 +4402,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const core = __importStar(__webpack_require__(470));
 const crypto = __importStar(__webpack_require__(417));
 const exec = __importStar(__webpack_require__(986));
+const io = __importStar(__webpack_require__(1));
 const github = __importStar(__webpack_require__(469));
 const wait_1 = __webpack_require__(521);
 var azPath;
@@ -4423,6 +4424,8 @@ function run() {
             let userAgentString = (!!prefix ? `${prefix}+` : '') + `GITHUBACTIONS_${actionName}_${usrAgentRepo}`;
             core.exportVariable('AZURE_HTTP_USER_AGENT', userAgentString);
             console.log(`userAgentString:${userAgentString}.`);
+            azPath = yield io.which("az", true);
+            console.log(`azPath:${azPath}.`);
         }
         catch (error) {
             core.setFailed(error.message);

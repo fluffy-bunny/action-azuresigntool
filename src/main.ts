@@ -30,9 +30,11 @@ async function run(): Promise<void> {
     let actionName = 'AzureLogin';
     let userAgentString = (!!prefix ? `${prefix}+` : '') + `GITHUBACTIONS_${actionName}_${usrAgentRepo}`;
     core.exportVariable('AZURE_HTTP_USER_AGENT', userAgentString);
-
-   
     console.log(`userAgentString:${userAgentString}.`);    
+
+    azPath = await io.which("az", true);
+    console.log(`azPath:${azPath}.`);    
+    
 
   } catch (error) {
     core.setFailed(error.message)
