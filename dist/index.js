@@ -5622,8 +5622,8 @@ const github = __importStar(__webpack_require__(469));
 const wait_1 = __webpack_require__(521);
 const secret_parser_1 = __webpack_require__(235);
 let azPath;
-var bAZURE_HTTP_USER_AGENT = !!process.env.AZURE_HTTP_USER_AGENT;
-const prefix = bAZURE_HTTP_USER_AGENT ? `${process.env.AZURE_HTTP_USER_AGENT}` : "";
+const bAzureHttpUserAgent = !!process.env.AZURE_HTTP_USER_AGENT;
+const prefix = bAzureHttpUserAgent ? `${process.env.AZURE_HTTP_USER_AGENT}` : '';
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -5636,9 +5636,9 @@ function run() {
             core.debug(new Date().toTimeString());
             core.setOutput('time', new Date().toTimeString());
             // Set user agent varable
-            let usrAgentRepo = crypto.createHash('sha256').update(`${process.env.GITHUB_REPOSITORY}`).digest('hex');
-            let actionName = 'AzureLogin';
-            let userAgentString = (!!prefix ? `${prefix}+` : '') + `GITHUBACTIONS_${actionName}_${usrAgentRepo}`;
+            const usrAgentRepo = crypto.createHash('sha256').update(`${process.env.GITHUB_REPOSITORY}`).digest('hex');
+            const actionName = 'AzureLogin';
+            const userAgentString = (!!prefix ? `${prefix}+` : '') + `GITHUBACTIONS_${actionName}_${usrAgentRepo}`;
             core.exportVariable('AZURE_HTTP_USER_AGENT', userAgentString);
             console.log(`userAgentString:${userAgentString}.`);
             azPath = yield io.which("az", true);
