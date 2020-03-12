@@ -5815,10 +5815,9 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const core = __importStar(__webpack_require__(470));
-function ToAny(a) { return a; }
-const jp = ToAny(__webpack_require__(374));
-const xpath = ToAny(__webpack_require__(769));
-const domParser = ToAny(__webpack_require__(721)).DOMParser;
+var jp = __webpack_require__(374);
+var xpath = __webpack_require__(769);
+var domParser = __webpack_require__(721).DOMParser;
 var FormatType;
 (function (FormatType) {
     FormatType[FormatType["JSON"] = 0] = "JSON";

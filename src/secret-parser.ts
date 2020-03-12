@@ -1,10 +1,8 @@
 import * as core from '@actions/core'
  
-function ToAny(a: unknown): any {return a as any}
-const jp = ToAny(require('jsonpath'))
-const xpath = ToAny(require('xpath'))
-const domParser = ToAny(require('xmldom')).DOMParser
-
+var jp = require('jsonpath')
+var xpath = require('xpath')
+var domParser = require('xmldom').DOMParser
 
 export enum FormatType {
     "JSON",
@@ -16,31 +14,31 @@ export enum FormatType {
  * Exposes getSecret method to get value of specific secret in object and set it as secret.
  */
 export class SecretParser {
-    private dom: string;
-    private contentType: FormatType;
+    private dom: string
+    private contentType: FormatType
 
     constructor(content: string, contentType: FormatType) {
         switch(contentType) {
             case FormatType.JSON:
                 try {
-                    this.dom = JSON.parse(content);
+                    this.dom = JSON.parse(content)
                 } 
                 catch (ex) {
-                    throw new Error('Content is not a valid JSON object');
+                    throw new Error('Content is not a valid JSON object')
                 }
-                break;
+                break
             case FormatType.XML:
                 try {
-                    this.dom = new domParser().parseFromString(content);
+                    this.dom = new domParser().parseFromString(content)
                 }
                 catch (ex) {
-                    throw new Error('Content is not a valid XML object');
+                    throw new Error('Content is not a valid XML object')
                 }
-                break;
+                break
             default: 
                 throw new Error(`Given format: ${contentType} is not supported. Valid options are JSON, XML.`)
         }
-        this.contentType = contentType;
+        this.contentType = contentType
     }
 
     /**
@@ -51,50 +49,50 @@ export class SecretParser {
      * @returns a string value or empty string if key not found
      */
     public getSecret(key: string, isSecret: boolean = true, variableName?: string): string {
-        let value: string = "";
+        let value: string = ""
         switch(this.contentType) {
             case FormatType.JSON:
-                value = this.extractJsonPath(key, isSecret, variableName);
-                break;
+                value = this.extractJsonPath(key, isSecret, variableName)
+                break
             case FormatType.XML:
-                value = this.extractXmlPath(key, isSecret, variableName);
-                break;
+                value = this.extractXmlPath(key, isSecret, variableName)
+                break
         }
 
-        return value;
+        return value
     }
     
     private extractJsonPath(key: string, isSecret: boolean = false, variableName?: string): string {
-        let value = jp.query(this.dom, key);
+        let value = jp.query(this.dom, key)
         if(value.length == 0) {
             core.debug("Cannot find key: " + key)
-            return "";
+            return ""
         }
         else if(value.length > 1) {
-            core.debug("Multiple values found for key: " + key + ". Please give jsonPath which points to a single value.");
-            return "";
+            core.debug("Multiple values found for key: " + key + ". Please give jsonPath which points to a single value.")
+            return ""
         }
-        return this.handleSecret(key, value[0], isSecret, variableName);
+        return this.handleSecret(key, value[0], isSecret, variableName)
     }
     
     private extractXmlPath(key: string, isSecret: boolean = false, variableName?: string): string {
-        let value = xpath.select("string(" + key + ")", this.dom);
-        return this.handleSecret(key, value, isSecret, variableName);
+        let value = xpath.select("string(" + key + ")", this.dom)
+        return this.handleSecret(key, value, isSecret, variableName)
     }
 
     private handleSecret(key: string, value: string, isSecret: boolean, variableName?: string): string {
         if(!!value) {
             if(isSecret) {
-                core.setSecret(value);
+                core.setSecret(value)
             }
             if(!!variableName) {
-                core.exportVariable(variableName, value);
+                core.exportVariable(variableName, value)
             }
-            return value;
+            return value
         }
         else {
-            core.debug("Cannot find key: " + key);
-            return "";
+            core.debug("Cannot find key: " + key)
+            return ""
         }
     }
 }
