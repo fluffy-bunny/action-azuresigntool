@@ -5646,6 +5646,16 @@ function run() {
             let creds = core.getInput('creds', { required: true });
             console.log(`creds:${creds}.`);
             let secrets = new secret_parser_1.SecretParser(creds, secret_parser_1.FormatType.JSON);
+            let servicePrincipalId = secrets.getSecret("$.clientId", false);
+            let servicePrincipalKey = secrets.getSecret("$.clientSecret", true);
+            let tenantId = secrets.getSecret("$.tenantId", false);
+            let subscriptionId = secrets.getSecret("$.subscriptionId", false);
+            if (!servicePrincipalId || !servicePrincipalKey || !tenantId || !subscriptionId) {
+                throw new Error("Not all values are present in the creds object. Ensure clientId, clientSecret, tenantId and subscriptionId are supplied.");
+            }
+            yield executeAzCliCommand(`login --service-principal -u "${servicePrincipalId}" -p "${servicePrincipalKey}" --tenant "${tenantId}"`);
+            yield executeAzCliCommand(`account set --subscription "${subscriptionId}"`);
+            console.log("Login successful.");
         }
         catch (error) {
             core.setFailed(error.message);

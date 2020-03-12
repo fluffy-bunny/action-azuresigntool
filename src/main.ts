@@ -41,6 +41,18 @@ async function run(): Promise<void> {
     
     let secrets = new SecretParser(creds, FormatType.JSON);
 
+    let servicePrincipalId = secrets.getSecret("$.clientId", false);
+    let servicePrincipalKey = secrets.getSecret("$.clientSecret", true);
+    let tenantId = secrets.getSecret("$.tenantId", false);
+    let subscriptionId = secrets.getSecret("$.subscriptionId", false);
+    if (!servicePrincipalId || !servicePrincipalKey || !tenantId || !subscriptionId) {
+        throw new Error("Not all values are present in the creds object. Ensure clientId, clientSecret, tenantId and subscriptionId are supplied.");
+    }
+
+    await executeAzCliCommand(`login --service-principal -u "${servicePrincipalId}" -p "${servicePrincipalKey}" --tenant "${tenantId}"`);
+    await executeAzCliCommand(`account set --subscription "${subscriptionId}"`);
+    console.log("Login successful.");    
+
   } catch (error) {
     core.setFailed(error.message)
   }
