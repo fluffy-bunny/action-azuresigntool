@@ -2,6 +2,7 @@ import * as core from '@actions/core'
 import * as crypto from "crypto";
 import * as exec from '@actions/exec';
 import * as io from '@actions/io';
+import * as github from '@actions/github';
 import {wait} from './wait'
 
 import { FormatType, SecretParser } from 'actions-secret-parser';
@@ -12,6 +13,10 @@ var prefix = !!process.env.AZURE_HTTP_USER_AGENT ? `${process.env.AZURE_HTTP_USE
 
 async function run(): Promise<void> {
   try {
+    
+    const payload = JSON.stringify(github.context.payload, undefined, 2)
+    console.log(`The event payload: ${payload}`);
+
     const ms: string = core.getInput('milliseconds')
     core.debug(`Waiting ${ms} milliseconds ...`)
 
