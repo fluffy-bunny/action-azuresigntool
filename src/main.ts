@@ -39,7 +39,7 @@ async function run(): Promise<void> {
     let creds = core.getInput('creds', { required: true });
     console.log(`creds:${creds}.`);    
     
-
+    let secrets = new SecretParser(creds, FormatType.JSON);
 
   } catch (error) {
     core.setFailed(error.message)
