@@ -10,7 +10,6 @@ import * as util from 'util'
 import {wait} from './wait'
 
 import {FormatType, SecretParser} from './secret-parser'
-import {Z_FIXED} from 'zlib'
 
 let azPath: string
 const bAzureHttpUserAgent = !!process.env.AZURE_HTTP_USER_AGENT
@@ -32,14 +31,42 @@ const signtoolFileExtensions = [
   '.ps1',
   '.psm1'
 ]
+
+const astProperties = ['du', 'fd', 'kvu', 'kvi', 'kvs', 'kvc', 'tr', 'td']
+
 async function signFiles(): Promise<void> {
   const folder = core.getInput('folder', {required: true})
   const recursive = core.getInput('recursive') === 'true'
   const folderPath = path.dirname(folder)
 
+  const azureSignToolAssembly = core.getInput('azure_sign_tool_assembly', {
+    required: true
+  })
+  const azureSignToolAssemblyFullPath = await fs.realpath(azureSignToolAssembly)
+  console.log(`azureSignToolAssemblyFullPath: ${azureSignToolAssemblyFullPath}`)
+  await executeCliCommand('dotnet', `${azureSignToolAssemblyFullPath} sign -h`)
+
   console.log(
     `folder: ${folder}, recursive: ${recursive}, folderPath: ${folderPath}`
   )
+
+  const azureSignToolCredentials = core.getInput(
+    'azure_sign_tool_credentials',
+    {required: true}
+  )
+  console.log(`azureSignToolCredentials:${azureSignToolCredentials}.`)
+  const secretsAST = new SecretParser(azureSignToolCredentials, FormatType.JSON)
+  const du = secretsAST.getSecret('$.du', false)
+  console.log(`du:${du}.`)
+
+  const dataSecretsAST = {}
+  for (const prop of astProperties) {
+    Object.defineProperty(dataSecretsAST, prop, {
+      value: secretsAST.getSecret('$.du', false),
+      writable: false
+    })
+  }
+  console.log(`dataSecretsAST:${dataSecretsAST}`)
   const iterator = getFiles(folder, recursive)
   for await (const file of iterator) {
     console.log(`file:${file}`)
@@ -52,19 +79,6 @@ async function run(): Promise<void> {
     console.log(`The event payload: ${payload}`)
     await signFiles()
 
-    const azureSignToolAssembly = core.getInput('azure_sign_tool_assembly', {
-      required: true
-    })
-    const azureSignToolAssemblyFullPath = await fs.realpath(
-      azureSignToolAssembly
-    )
-    console.log(
-      `azureSignToolAssemblyFullPath: ${azureSignToolAssemblyFullPath}`
-    )
-    await executeCliCommand(
-      'dotnet',
-      `${azureSignToolAssemblyFullPath} sign -h`
-    )
     const ms: string = core.getInput('milliseconds')
     core.debug(`Waiting ${ms} milliseconds ...`)
 
@@ -93,18 +107,6 @@ async function run(): Promise<void> {
     console.log(`creds:${creds}.`)
     const secrets = new SecretParser(creds, FormatType.JSON)
 
-    const azureSignToolCredentials = core.getInput(
-      'azure_sign_tool_credentials',
-      {required: true}
-    )
-    console.log(`azureSignToolCredentials:${azureSignToolCredentials}.`)
-    const secretsAST = new SecretParser(
-      azureSignToolCredentials,
-      FormatType.JSON
-    )
-    const du = secretsAST.getSecret('$.du', false)
-    console.log(`du:${du}.`)
-
     const servicePrincipalId = secrets.getSecret('$.clientId', false)
     const servicePrincipalKey = secrets.getSecret('$.clientSecret', true)
     const tenantId = secrets.getSecret('$.tenantId', false)
@@ -132,8 +134,6 @@ async function run(): Promise<void> {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function* getFiles(folder: string, recursive: boolean): any {
-  const dd = await fs.realpath(folder)
-  console.log(`realpath: ${dd}`)
   const files = await fs.readdir(folder)
   for (const file of files) {
     const fullPath = `${folder}/${file}`
@@ -145,7 +145,6 @@ async function* getFiles(folder: string, recursive: boolean): any {
         extension === '.nupkg'
       ) {
         yield fullPath
-        console.log(`fullPath:${fullPath}`)
       }
     } else if (stat.isDirectory() && recursive) {
       yield* getFiles(fullPath, recursive)
