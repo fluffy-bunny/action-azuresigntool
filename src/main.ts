@@ -109,7 +109,7 @@ async function run(): Promise<void> {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function* getFiles(folder: string, recursive: boolean): any {
   const dd = await fs.realpath(folder)
-  console.log(`dd: ${dd}`)
+  console.log(`realpath: ${dd}`)
   const files = await fs.readdir(folder)
   for (const file of files) {
     const fullPath = `${folder}/${file}`
