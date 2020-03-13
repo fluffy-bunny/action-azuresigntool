@@ -1,3 +1,4 @@
+/* eslint-disable prefer-const */
 import * as core from '@actions/core'
 import {promises as fs} from 'fs'
 import * as crypto from 'crypto'
@@ -59,16 +60,20 @@ async function signFiles(): Promise<void> {
   const du = secretsAST.getSecret('$.du', false)
   console.log(`du:${du}.`)
 
-  const dataSecretsAST = {}
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let dataSecretsAST: any = {}
+  
   for (const prop of astProperties) {
-    Object.defineProperty(dataSecretsAST, prop, {
-      value: secretsAST.getSecret('$.du', false),
-      writable: false
-    })
+    dataSecretsAST[prop] = secretsAST.getSecret(`$.${prop}`, false)
   }
+  
   console.log(`dataSecretsAST:${JSON.stringify(dataSecretsAST, null, 4)}`)
   const iterator = getFiles(folder, recursive)
   for await (const file of iterator) {
+    await executeCliCommand(
+      'dotnet',
+      `${azureSignToolAssemblyFullPath} sign -du ${dataSecretsAST.du}`
+    )
     console.log(`file:${file}`)
   }
 }
