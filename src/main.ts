@@ -34,8 +34,11 @@ const signtoolFileExtensions = [
 async function signFiles(): Promise<void> {
   const folder = core.getInput('folder', {required: true})
   const recursive = core.getInput('recursive') === 'true'
+  const folderPath = path.dirname(folder)
 
-  console.log(`folder: ${folder}, recursive: ${recursive}`)
+  console.log(
+    `folder: ${folder}, recursive: ${recursive}, folderPath: ${folderPath}`
+  )
   const iterator = getFiles(folder, recursive)
   for await (const file of iterator) {
     console.log(`file:${file}`)
