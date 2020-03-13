@@ -66,7 +66,7 @@ async function signFiles(): Promise<void> {
       writable: false
     })
   }
-  console.log(`dataSecretsAST:${dataSecretsAST}`)
+  console.log(`dataSecretsAST:${JSON.stringify(dataSecretsAST, null, 4)}`)
   const iterator = getFiles(folder, recursive)
   for await (const file of iterator) {
     console.log(`file:${file}`)
