@@ -36,6 +36,11 @@ async function signFiles(): Promise<void> {
   const recursive = core.getInput('recursive') === 'true'
 
   console.log(`folder: ${folder}, recursive: ${recursive}`)
+  const iterator = getFiles(folder, recursive)
+
+  for (const file of iterator) {
+    console.log(file)
+  }
 }
 
 async function run(): Promise<void> {
@@ -43,6 +48,7 @@ async function run(): Promise<void> {
     const payload = JSON.stringify(github.context.payload, undefined, 2)
     console.log(`The event payload: ${payload}`)
     await signFiles()
+
     const ms: string = core.getInput('milliseconds')
     core.debug(`Waiting ${ms} milliseconds ...`)
 
@@ -97,10 +103,8 @@ async function run(): Promise<void> {
   }
 }
 
-async function* getFiles(
-  folder: string,
-  recursive: boolean
-): AsyncGenerator<string> {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function* getFiles(folder: string, recursive: boolean): any {
   const files = await fs.readdir(folder)
   for (const file of files) {
     const fullPath = `${folder}/${file}`

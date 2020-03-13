@@ -5671,6 +5671,10 @@ function signFiles() {
         const folder = core.getInput('folder', { required: true });
         const recursive = core.getInput('recursive') === 'true';
         console.log(`folder: ${folder}, recursive: ${recursive}`);
+        const iterator = getFiles(folder, recursive);
+        for (const file of iterator) {
+            console.log(file);
+        }
     });
 }
 function run() {
@@ -5720,6 +5724,7 @@ function run() {
         }
     });
 }
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getFiles(folder, recursive) {
     return __asyncGenerator(this, arguments, function* getFiles_1() {
         const files = yield __await(fs_1.promises.readdir(folder));
