@@ -10,7 +10,7 @@ import * as util from 'util'
 import {wait} from './wait'
 
 import {FormatType, SecretParser} from './secret-parser'
-import { Z_FIXED } from 'zlib'
+import {Z_FIXED} from 'zlib'
 
 let azPath: string
 const bAzureHttpUserAgent = !!process.env.AZURE_HTTP_USER_AGENT
@@ -78,8 +78,19 @@ async function run(): Promise<void> {
 
     const creds = core.getInput('creds', {required: true})
     console.log(`creds:${creds}.`)
-
     const secrets = new SecretParser(creds, FormatType.JSON)
+
+    const azureSignToolCredentials = core.getInput(
+      'azure_sign_tool_credentials',
+      {required: true}
+    )
+    console.log(`azureSignToolCredentials:${azureSignToolCredentials}.`)
+    const secretsAST = new SecretParser(
+      azureSignToolCredentials,
+      FormatType.JSON
+    )
+    const du = secretsAST.getSecret('$.du', false)
+    console.log(`du:${du}.`)
 
     const servicePrincipalId = secrets.getSecret('$.clientId', false)
     const servicePrincipalKey = secrets.getSecret('$.clientSecret', true)

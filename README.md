@@ -99,3 +99,18 @@ See the [actions tab](https://github.com/actions/javascript-action/actions) for 
 ## Usage:
 
 After testing you can [create a v1 tag](https://github.com/actions/toolkit/blob/master/docs/action-versioning.md) to reference the stable and latest V1 action
+
+## Repo Secrets
+### AZURE_SIGN_TOOL_CREDENTIALS
+```json
+{
+	"du": "https://vcsjones.com",
+	"fd": "sha384",
+	"kvu": "https://my-vault.vault.azure.net",
+	"kvi": "01234567-abcd-ef012-0000-0123456789ab",
+	"kvs": "<token>",
+	"kvc": "my-key-name",
+	"tr": "http://timestamp.digicert.com",
+	"td": "sha384"
+}
+```
