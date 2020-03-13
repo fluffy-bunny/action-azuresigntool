@@ -5607,17 +5607,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 var __await = (this && this.__await) || function (v) { return this instanceof __await ? (this.v = v, this) : new __await(v); }
-var __asyncGenerator = (this && this.__asyncGenerator) || function (thisArg, _arguments, generator) {
-    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
-    var g = generator.apply(thisArg, _arguments || []), i, q = [];
-    return i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i;
-    function verb(n) { if (g[n]) i[n] = function (v) { return new Promise(function (a, b) { q.push([n, v, a, b]) > 1 || resume(n, v); }); }; }
-    function resume(n, v) { try { step(g[n](v)); } catch (e) { settle(q[0][3], e); } }
-    function step(r) { r.value instanceof __await ? Promise.resolve(r.value.v).then(fulfill, reject) : settle(q[0][2], r); }
-    function fulfill(value) { resume("next", value); }
-    function reject(value) { resume("throw", value); }
-    function settle(f, v) { if (f(v), q.shift(), q.length) resume(q[0][0], q[0][1]); }
-};
 var __asyncValues = (this && this.__asyncValues) || function (o) {
     if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
     var m = o[Symbol.asyncIterator], i;
@@ -5629,6 +5618,17 @@ var __asyncDelegator = (this && this.__asyncDelegator) || function (o) {
     var i, p;
     return i = {}, verb("next"), verb("throw", function (e) { throw e; }), verb("return"), i[Symbol.iterator] = function () { return this; }, i;
     function verb(n, f) { i[n] = o[n] ? function (v) { return (p = !p) ? { value: __await(o[n](v)), done: n === "return" } : f ? f(v) : v; } : f; }
+};
+var __asyncGenerator = (this && this.__asyncGenerator) || function (thisArg, _arguments, generator) {
+    if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
+    var g = generator.apply(thisArg, _arguments || []), i, q = [];
+    return i = {}, verb("next"), verb("throw"), verb("return"), i[Symbol.asyncIterator] = function () { return this; }, i;
+    function verb(n) { if (g[n]) i[n] = function (v) { return new Promise(function (a, b) { q.push([n, v, a, b]) > 1 || resume(n, v); }); }; }
+    function resume(n, v) { try { step(g[n](v)); } catch (e) { settle(q[0][3], e); } }
+    function step(r) { r.value instanceof __await ? Promise.resolve(r.value.v).then(fulfill, reject) : settle(q[0][2], r); }
+    function fulfill(value) { resume("next", value); }
+    function reject(value) { resume("throw", value); }
+    function settle(f, v) { if (f(v), q.shift(), q.length) resume(q[0][0], q[0][1]); }
 };
 var __importStar = (this && this.__importStar) || function (mod) {
     if (mod && mod.__esModule) return mod;
@@ -5666,11 +5666,19 @@ const signtoolFileExtensions = [
     '.ps1',
     '.psm1'
 ];
+function signFiles() {
+    return __awaiter(this, void 0, void 0, function* () {
+        const folder = core.getInput('folder', { required: true });
+        const recursive = core.getInput('recursive') === 'true';
+        console.log(`folder: ${folder}, recursive: ${recursive}`);
+    });
+}
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const payload = JSON.stringify(github.context.payload, undefined, 2);
             console.log(`The event payload: ${payload}`);
+            yield signFiles();
             const ms = core.getInput('milliseconds');
             core.debug(`Waiting ${ms} milliseconds ...`);
             core.debug(new Date().toTimeString());
@@ -5690,8 +5698,6 @@ function run() {
             azPath = yield io.which('az', true);
             console.log(`azPath:${azPath}.`);
             yield executeAzCliCommand('--version');
-            const myPath = core.getInput('path', { required: true });
-            console.log(`myPath:${myPath}.`);
             const creds = core.getInput('creds', { required: true });
             console.log(`creds:${creds}.`);
             const secrets = new secret_parser_1.SecretParser(creds, secret_parser_1.FormatType.JSON);
@@ -5712,12 +5718,6 @@ function run() {
         catch (error) {
             core.setFailed(error.message);
         }
-    });
-}
-function getCritters() {
-    return __asyncGenerator(this, arguments, function* getCritters_1() {
-        yield yield __await('Roger');
-        yield yield __await('Rabbit');
     });
 }
 function getFiles(folder, recursive) {

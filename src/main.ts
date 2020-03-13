@@ -31,12 +31,18 @@ const signtoolFileExtensions = [
   '.ps1',
   '.psm1'
 ]
+async function signFiles(): Promise<void> {
+  const folder = core.getInput('folder', {required: true})
+  const recursive = core.getInput('recursive') === 'true'
+
+  console.log(`folder: ${folder}, recursive: ${recursive}`)
+}
 
 async function run(): Promise<void> {
   try {
     const payload = JSON.stringify(github.context.payload, undefined, 2)
     console.log(`The event payload: ${payload}`)
-
+    await signFiles()
     const ms: string = core.getInput('milliseconds')
     core.debug(`Waiting ${ms} milliseconds ...`)
 
@@ -60,9 +66,6 @@ async function run(): Promise<void> {
     azPath = await io.which('az', true)
     console.log(`azPath:${azPath}.`)
     await executeAzCliCommand('--version')
-
-    const myPath = core.getInput('path', {required: true})
-    console.log(`myPath:${myPath}.`)
 
     const creds = core.getInput('creds', {required: true})
     console.log(`creds:${creds}.`)
@@ -93,10 +96,7 @@ async function run(): Promise<void> {
     core.setFailed(error.message)
   }
 }
-async function* getCritters(): AsyncGenerator<string> {
-  yield 'Roger'
-  yield 'Rabbit'
-}
+
 async function* getFiles(
   folder: string,
   recursive: boolean
