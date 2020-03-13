@@ -5606,7 +5606,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __await = (this && this.__await) || function (v) { return this instanceof __await ? (this.v = v, this) : new __await(v); }
 var __asyncValues = (this && this.__asyncValues) || function (o) {
     if (!Symbol.asyncIterator) throw new TypeError("Symbol.asyncIterator is not defined.");
     var m = o[Symbol.asyncIterator], i;
@@ -5614,6 +5613,7 @@ var __asyncValues = (this && this.__asyncValues) || function (o) {
     function verb(n) { i[n] = o[n] && function (v) { return new Promise(function (resolve, reject) { v = o[n](v), settle(resolve, reject, v.done, v.value); }); }; }
     function settle(resolve, reject, d, v) { Promise.resolve(v).then(function(v) { resolve({ value: v, done: d }); }, reject); }
 };
+var __await = (this && this.__await) || function (v) { return this instanceof __await ? (this.v = v, this) : new __await(v); }
 var __asyncDelegator = (this && this.__asyncDelegator) || function (o) {
     var i, p;
     return i = {}, verb("next"), verb("throw", function (e) { throw e; }), verb("return"), i[Symbol.iterator] = function () { return this; }, i;
@@ -5667,13 +5667,24 @@ const signtoolFileExtensions = [
     '.psm1'
 ];
 function signFiles() {
+    var e_1, _a;
     return __awaiter(this, void 0, void 0, function* () {
         const folder = core.getInput('folder', { required: true });
         const recursive = core.getInput('recursive') === 'true';
         console.log(`folder: ${folder}, recursive: ${recursive}`);
         const iterator = getFiles(folder, recursive);
-        for (const file of iterator) {
-            console.log(file);
+        try {
+            for (var iterator_1 = __asyncValues(iterator), iterator_1_1; iterator_1_1 = yield iterator_1.next(), !iterator_1_1.done;) {
+                const file = iterator_1_1.value;
+                console.log(`file:${file}`);
+            }
+        }
+        catch (e_1_1) { e_1 = { error: e_1_1 }; }
+        finally {
+            try {
+                if (iterator_1_1 && !iterator_1_1.done && (_a = iterator_1.return)) yield _a.call(iterator_1);
+            }
+            finally { if (e_1) throw e_1.error; }
         }
     });
 }
@@ -5733,8 +5744,11 @@ function getFiles(folder, recursive) {
             const stat = yield __await(fs_1.promises.stat(fullPath));
             if (stat.isFile()) {
                 const extension = path.extname(file);
-                if (signtoolFileExtensions.includes(extension) || extension === '.nupkg')
+                if (signtoolFileExtensions.includes(extension) ||
+                    extension === '.nupkg') {
                     yield yield __await(fullPath);
+                    console.log(`fullPath:${fullPath}`);
+                }
             }
             else if (stat.isDirectory() && recursive) {
                 yield __await(yield* __asyncDelegator(__asyncValues(getFiles(fullPath, recursive))));

@@ -37,9 +37,8 @@ async function signFiles(): Promise<void> {
 
   console.log(`folder: ${folder}, recursive: ${recursive}`)
   const iterator = getFiles(folder, recursive)
-
-  for (const file of iterator) {
-    console.log(file)
+  for await (const file of iterator) {
+    console.log(`file:${file}`)
   }
 }
 
@@ -111,8 +110,13 @@ async function* getFiles(folder: string, recursive: boolean): any {
     const stat = await fs.stat(fullPath)
     if (stat.isFile()) {
       const extension = path.extname(file)
-      if (signtoolFileExtensions.includes(extension) || extension === '.nupkg')
+      if (
+        signtoolFileExtensions.includes(extension) ||
+        extension === '.nupkg'
+      ) {
         yield fullPath
+        console.log(`fullPath:${fullPath}`)
+      }
     } else if (stat.isDirectory() && recursive) {
       yield* getFiles(fullPath, recursive)
     }
