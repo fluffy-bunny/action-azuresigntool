@@ -66,6 +66,6 @@ jobs:
         $a = ($pwd).path
         echo "a:"$a
         popd
-        azuresigntool sign -h
+
 
          
