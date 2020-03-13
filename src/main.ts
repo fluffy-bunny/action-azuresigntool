@@ -70,7 +70,7 @@ async function signFiles(): Promise<void> {
   console.log(`dataSecretsAST:${JSON.stringify(dataSecretsAST, null, 4)}`)
   const iterator = getFiles(folder, recursive)
   for await (const file of iterator) {
-    const command = `${azureSignToolAssemblyFullPath} sign -du ${dataSecretsAST.du} -fd ${dataSecretsAST.fd} -kvu ${dataSecretsAST.kvu} -kvi ${dataSecretsAST.kvi} -kvs ${dataSecretsAST.kvs} -tr ${dataSecretsAST.tr} -td ${dataSecretsAST.td} -v ${file}`
+    const command = `${azureSignToolAssemblyFullPath} sign -du ${dataSecretsAST.du} -fd ${dataSecretsAST.fd} -kvu ${dataSecretsAST.kvu} -kvi ${dataSecretsAST.kvi} -kvc ${dataSecretsAST.kvc} -kvs ${dataSecretsAST.kvs} -tr ${dataSecretsAST.tr} -td ${dataSecretsAST.td} -v ${file}`
 
     console.log(`command:${command}`)
     await executeCliCommand('dotnet', `${command}`)
