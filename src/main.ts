@@ -62,18 +62,18 @@ async function signFiles(): Promise<void> {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let dataSecretsAST: any = {}
-  
+
   for (const prop of astProperties) {
     dataSecretsAST[prop] = secretsAST.getSecret(`$.${prop}`, false)
   }
-  
+
   console.log(`dataSecretsAST:${JSON.stringify(dataSecretsAST, null, 4)}`)
   const iterator = getFiles(folder, recursive)
   for await (const file of iterator) {
-    await executeCliCommand(
-      'dotnet',
-      `${azureSignToolAssemblyFullPath} sign -du ${dataSecretsAST.du}`
-    )
+    const command = `${azureSignToolAssemblyFullPath} sign -du ${dataSecretsAST.du} -fd ${dataSecretsAST.fd} -kvu ${dataSecretsAST.kvu} -kvi ${dataSecretsAST.kvi} -kvs ${dataSecretsAST.kvs} -tr ${dataSecretsAST.tr} -td ${dataSecretsAST.td} -v ${file}`
+
+    console.log(`command:${command}`)
+    await executeCliCommand('dotnet', `${command}`)
     console.log(`file:${file}`)
   }
 }
