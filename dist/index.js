@@ -5739,6 +5739,8 @@ function run() {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getFiles(folder, recursive) {
     return __asyncGenerator(this, arguments, function* getFiles_1() {
+        const dd = yield __await(fs_1.promises.realpath(folder));
+        console.log(`dd: ${dd}`);
         const files = yield __await(fs_1.promises.readdir(folder));
         for (const file of files) {
             const fullPath = `${folder}/${file}`;

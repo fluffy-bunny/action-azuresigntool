@@ -10,6 +10,7 @@ import * as util from 'util'
 import {wait} from './wait'
 
 import {FormatType, SecretParser} from './secret-parser'
+import { Z_FIXED } from 'zlib'
 
 let azPath: string
 const bAzureHttpUserAgent = !!process.env.AZURE_HTTP_USER_AGENT
@@ -107,6 +108,8 @@ async function run(): Promise<void> {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function* getFiles(folder: string, recursive: boolean): any {
+  const dd = await fs.realpath(folder)
+  console.log(`dd: ${dd}`)
   const files = await fs.readdir(folder)
   for (const file of files) {
     const fullPath = `${folder}/${file}`
