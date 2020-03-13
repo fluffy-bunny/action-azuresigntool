@@ -52,6 +52,19 @@ async function run(): Promise<void> {
     console.log(`The event payload: ${payload}`)
     await signFiles()
 
+    const azureSignToolAssembly = core.getInput('azure_sign_tool_assembly', {
+      required: true
+    })
+    const azureSignToolAssemblyFullPath = await fs.realpath(
+      azureSignToolAssembly
+    )
+    console.log(
+      `azureSignToolAssemblyFullPath: ${azureSignToolAssemblyFullPath}`
+    )
+    await executeCliCommand(
+      'dotnet',
+      `${azureSignToolAssemblyFullPath} sign -h`
+    )
     const ms: string = core.getInput('milliseconds')
     core.debug(`Waiting ${ms} milliseconds ...`)
 
@@ -140,11 +153,17 @@ async function* getFiles(folder: string, recursive: boolean): any {
   }
 }
 async function executeAzCliCommand(command: string): Promise<void> {
+  await executeCliCommand(azPath, command)
+}
+
+async function executeCliCommand(
+  cliPath: string,
+  command: string
+): Promise<void> {
   try {
-    await exec.exec(`"${azPath}" ${command}`, [], {})
+    await exec.exec(`"${cliPath}" ${command}`, [], {})
   } catch (error) {
     throw new Error(error)
   }
 }
-
 run()
