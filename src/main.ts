@@ -68,13 +68,41 @@ async function signFiles(): Promise<void> {
   }
 
   console.log(`dataSecretsAST:${JSON.stringify(dataSecretsAST, null, 4)}`)
+  const pathFilesToSign = 'files/files-to-sign.txt'
+
+  await simpleFileWrite(pathFilesToSign, '')
+
   const iterator = getFiles(folder, recursive)
   for await (const file of iterator) {
-    const command = `${azureSignToolAssemblyFullPath} sign -du ${dataSecretsAST.du} -fd ${dataSecretsAST.fd} -kvu ${dataSecretsAST.kvu} -kvi ${dataSecretsAST.kvi} -kvc ${dataSecretsAST.kvc} -kvs ${dataSecretsAST.kvs} -tr ${dataSecretsAST.tr} -td ${dataSecretsAST.td} -v ${file}`
+    await simpleAppend(pathFilesToSign, `\n${file}`)
+  }
 
-    console.log(`command:${command}`)
+  /*
+  const command = `${azureSignToolAssemblyFullPath} sign -du ${dataSecretsAST.du} -fd ${dataSecretsAST.fd} -kvu ${dataSecretsAST.kvu} -kvi ${dataSecretsAST.kvi} -kvc ${dataSecretsAST.kvc} -kvs ${dataSecretsAST.kvs} -tr ${dataSecretsAST.tr} -td ${dataSecretsAST.td} -v ${file}`
+
+  console.log(`command:${command}`)
     await executeCliCommand('dotnet', `${command}`)
     console.log(`file:${file}`)
+  }
+  */
+}
+
+async function simpleAppend(filePath: string, content: string): Promise<void> {
+  try {
+    await fs.appendFile(filePath, content)
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+async function simpleFileWrite(
+  filePath: string,
+  content: string
+): Promise<void> {
+  try {
+    await fs.writeFile(filePath, content)
+  } catch (err) {
+    console.log(err)
   }
 }
 
