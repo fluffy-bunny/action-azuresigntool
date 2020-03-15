@@ -153,10 +153,10 @@ async function writeFilesToSign(
         signtoolFileExtensions.includes(extension) ||
         extension === '.nupkg'
       ) {
-        await simpleAppend(filePath, `\n${file}`)
+        await simpleAppend(filePath, `\n${fullPath}`)
       }
     } else if (stat.isDirectory() && recursive) {
-      await writeFilesToSign(filePath, folder, recursive)
+      await writeFilesToSign(filePath, fullPath, recursive)
     }
   }
 }
