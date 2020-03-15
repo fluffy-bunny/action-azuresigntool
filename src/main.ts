@@ -72,34 +72,11 @@ async function signFiles(): Promise<void> {
 
   await simpleFileWrite(pathFilesToSign, '')
 
-  const iterator = getFiles(folder, recursive)
-  for await (const file of iterator) {
-    //  const command = `${azureSignToolAssemblyFullPath} sign -du ${dataSecretsAST.du} -fd ${dataSecretsAST.fd} -kvu ${dataSecretsAST.kvu} -kvi ${dataSecretsAST.kvi} -kvc ${dataSecretsAST.kvc} -kvs ${dataSecretsAST.kvs} -tr ${dataSecretsAST.tr} -td ${dataSecretsAST.td} -v ${file}`
-    await simpleAppend(pathFilesToSign, `\n${file}`)
-  }
+  await writeFilesToSign(pathFilesToSign, folder, recursive)
 
   const command = `${azureSignToolAssemblyFullPath} sign -du ${dataSecretsAST.du} -fd ${dataSecretsAST.fd} -kvu ${dataSecretsAST.kvu} -kvi ${dataSecretsAST.kvi} -kvc ${dataSecretsAST.kvc} -kvs ${dataSecretsAST.kvs} -tr ${dataSecretsAST.tr} -td ${dataSecretsAST.td} -v -ifl ${pathFilesToSign}`
   console.log(`command:${command}`)
   await executeCliCommand('dotnet', `${command}`)
-}
-
-async function simpleAppend(filePath: string, content: string): Promise<void> {
-  try {
-    await fs.appendFile(filePath, content)
-  } catch (err) {
-    console.log(err)
-  }
-}
-
-async function simpleFileWrite(
-  filePath: string,
-  content: string
-): Promise<void> {
-  try {
-    await fs.writeFile(filePath, content)
-  } catch (err) {
-    console.log(err)
-  }
 }
 
 async function run(): Promise<void> {
@@ -161,7 +138,46 @@ async function run(): Promise<void> {
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function writeFilesToSign(
+  filePath: string,
+  folder: string,
+  recursive: boolean
+): Promise<void> {
+  const files = await fs.readdir(folder)
+  for (const file of files) {
+    const fullPath = `${folder}/${file}`
+    const stat = await fs.stat(fullPath)
+    if (stat.isFile()) {
+      const extension = path.extname(file)
+      if (
+        signtoolFileExtensions.includes(extension) ||
+        extension === '.nupkg'
+      ) {
+        await simpleAppend(filePath, `\n${file}`)
+      }
+    } else if (stat.isDirectory() && recursive) {
+      await writeFilesToSign(filePath, folder, recursive)
+    }
+  }
+}
+async function simpleFileWrite(
+  filePath: string,
+  content: string
+): Promise<void> {
+  try {
+    await fs.writeFile(filePath, content)
+  } catch (err) {
+    console.log(err)
+  }
+}
+async function simpleAppend(filePath: string, content: string): Promise<void> {
+  try {
+    await fs.appendFile(filePath, content)
+  } catch (err) {
+    console.log(err)
+  }
+}
+/*
 async function* getFiles(folder: string, recursive: boolean): any {
   const files = await fs.readdir(folder)
   for (const file of files) {
@@ -180,6 +196,7 @@ async function* getFiles(folder: string, recursive: boolean): any {
     }
   }
 }
+*/
 async function executeAzCliCommand(command: string): Promise<void> {
   await executeCliCommand(azPath, command)
 }
