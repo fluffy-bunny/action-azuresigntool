@@ -6,7 +6,7 @@ import * as exec from '@actions/exec'
 import * as io from '@actions/io'
 import * as github from '@actions/github'
 import * as path from 'path'
-import * as util from 'util'
+//import * as util from 'util'
 
 import {wait} from './wait'
 
@@ -74,17 +74,13 @@ async function signFiles(): Promise<void> {
 
   const iterator = getFiles(folder, recursive)
   for await (const file of iterator) {
+    //  const command = `${azureSignToolAssemblyFullPath} sign -du ${dataSecretsAST.du} -fd ${dataSecretsAST.fd} -kvu ${dataSecretsAST.kvu} -kvi ${dataSecretsAST.kvi} -kvc ${dataSecretsAST.kvc} -kvs ${dataSecretsAST.kvs} -tr ${dataSecretsAST.tr} -td ${dataSecretsAST.td} -v ${file}`
     await simpleAppend(pathFilesToSign, `\n${file}`)
   }
 
-  /*
-  const command = `${azureSignToolAssemblyFullPath} sign -du ${dataSecretsAST.du} -fd ${dataSecretsAST.fd} -kvu ${dataSecretsAST.kvu} -kvi ${dataSecretsAST.kvi} -kvc ${dataSecretsAST.kvc} -kvs ${dataSecretsAST.kvs} -tr ${dataSecretsAST.tr} -td ${dataSecretsAST.td} -v ${file}`
-
+  const command = `${azureSignToolAssemblyFullPath} sign -du ${dataSecretsAST.du} -fd ${dataSecretsAST.fd} -kvu ${dataSecretsAST.kvu} -kvi ${dataSecretsAST.kvi} -kvc ${dataSecretsAST.kvc} -kvs ${dataSecretsAST.kvs} -tr ${dataSecretsAST.tr} -td ${dataSecretsAST.td} -v -ifl ${pathFilesToSign}`
   console.log(`command:${command}`)
-    await executeCliCommand('dotnet', `${command}`)
-    console.log(`file:${file}`)
-  }
-  */
+  await executeCliCommand('dotnet', `${command}`)
 }
 
 async function simpleAppend(filePath: string, content: string): Promise<void> {
