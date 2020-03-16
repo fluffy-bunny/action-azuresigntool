@@ -14,23 +14,6 @@ import {FormatType, SecretParser} from './secret-parser'
 const bAzureHttpUserAgent = !!process.env.AZURE_HTTP_USER_AGENT
 const prefix = bAzureHttpUserAgent ? `${process.env.AZURE_HTTP_USER_AGENT}` : ''
 
-const signtoolFileExtensions = [
-  '.dll',
-  '.exe',
-  '.sys',
-  '.vxd',
-  '.msix',
-  '.msixbundle',
-  '.appx',
-  '.appxbundle',
-  '.msi',
-  '.msp',
-  '.msm',
-  '.cab',
-  '.ps1',
-  '.psm1'
-]
-
 const astProperties = ['du', 'fd', 'kvu', 'kvi', 'kvs', 'kvc', 'tr', 'td']
 
 async function signFiles(): Promise<void> {
@@ -68,9 +51,9 @@ async function signFiles(): Promise<void> {
   console.log(`dataSecretsAST:${JSON.stringify(dataSecretsAST, null, 4)}`)
   const pathFilesToSign = 'files/files-to-sign.txt'
 
-  await simpleFileWrite(pathFilesToSign, '')
+  //await simpleFileWrite(pathFilesToSign, '')
 
-  await writeFilesToSign(pathFilesToSign, folder, recursive)
+  //await writeFilesToSign(pathFilesToSign, folder, recursive)
 
   const command = `${azureSignToolAssemblyFullPath} sign -du ${dataSecretsAST.du} -fd ${dataSecretsAST.fd} -kvu ${dataSecretsAST.kvu} -kvi ${dataSecretsAST.kvi} -kvc ${dataSecretsAST.kvc} -kvs ${dataSecretsAST.kvs} -tr ${dataSecretsAST.tr} -td ${dataSecretsAST.td} -v -ifl ${pathFilesToSign}`
   console.log(`command:${command}`)
@@ -107,45 +90,6 @@ async function run(): Promise<void> {
   }
 }
 
-async function writeFilesToSign(
-  filePath: string,
-  folder: string,
-  recursive: boolean
-): Promise<void> {
-  const files = await fs.readdir(folder)
-  for (const file of files) {
-    const fullPath = `${folder}/${file}`
-    const stat = await fs.stat(fullPath)
-    if (stat.isFile()) {
-      const extension = path.extname(file)
-      if (
-        signtoolFileExtensions.includes(extension) ||
-        extension === '.nupkg'
-      ) {
-        await simpleAppend(filePath, `\n${fullPath}`)
-      }
-    } else if (stat.isDirectory() && recursive) {
-      await writeFilesToSign(filePath, fullPath, recursive)
-    }
-  }
-}
-async function simpleFileWrite(
-  filePath: string,
-  content: string
-): Promise<void> {
-  try {
-    await fs.writeFile(filePath, content)
-  } catch (err) {
-    console.log(err)
-  }
-}
-async function simpleAppend(filePath: string, content: string): Promise<void> {
-  try {
-    await fs.appendFile(filePath, content)
-  } catch (err) {
-    console.log(err)
-  }
-}
 /*
 async function* getFiles(folder: string, recursive: boolean): any {
   const files = await fs.readdir(folder)
