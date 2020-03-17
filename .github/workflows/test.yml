@@ -33,7 +33,7 @@ jobs:
       uses: azure/login@v1
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
-        
+
     - name: Action Checkout
       uses: actions/checkout@v1
 
@@ -61,8 +61,8 @@ jobs:
         folder: 'files'
         recursive: true
         creds: ${{ secrets.AZURE_CREDENTIALS }}
-        azure_sign_tool_credentials: ${{ secrets.AZURE_SIGN_TOOL_CREDENTIALS }}
-        azure_sign_tool_assembly: ./tools/AzureSignTool/netcoreapp2.1/any/AzureSignTool.dll
+        azure_sign_tool_credentials: ${{ secrets.AZURE_SIGN_TOOL_CREDENTIALS_MANAGED_IDENTITY }}
+        azure_sign_tool_assembly: ./tools/AzureSignTool-DEV/netcoreapp2.1/any/AzureSignTool.dll
 
     - name: upload-artifact
       uses: actions/upload-artifact@v1

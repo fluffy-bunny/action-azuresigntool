@@ -14,7 +14,17 @@ import {FormatType, SecretParser} from './secret-parser'
 const bAzureHttpUserAgent = !!process.env.AZURE_HTTP_USER_AGENT
 const prefix = bAzureHttpUserAgent ? `${process.env.AZURE_HTTP_USER_AGENT}` : ''
 
-const astProperties = ['du', 'fd', 'kvu', 'kvi', 'kvs', 'kvc', 'tr', 'td']
+const astProperties = [
+  'du',
+  'fd',
+  'kvu',
+  'kvi',
+  'kvm',
+  'kvs',
+  'kvc',
+  'tr',
+  'td'
+]
 
 async function signFiles(): Promise<void> {
   const folder = core.getInput('folder', {required: true})
@@ -55,7 +65,14 @@ async function signFiles(): Promise<void> {
 
   //await writeFilesToSign(pathFilesToSign, folder, recursive)
 
-  const command = `${azureSignToolAssemblyFullPath} sign -du ${dataSecretsAST.du} -fd ${dataSecretsAST.fd} -kvu ${dataSecretsAST.kvu} -kvi ${dataSecretsAST.kvi} -kvc ${dataSecretsAST.kvc} -kvs ${dataSecretsAST.kvs} -tr ${dataSecretsAST.tr} -td ${dataSecretsAST.td} -v -ifl ${pathFilesToSign}`
+  let command: string
+  const kvm = secretsAST.getSecret('$.kvm', false)
+  if (kvm) {
+    command = `${azureSignToolAssemblyFullPath} sign -du ${dataSecretsAST.du} -fd ${dataSecretsAST.fd} -kvu ${dataSecretsAST.kvu} -kvc ${dataSecretsAST.kvc} -tr ${dataSecretsAST.tr} -td ${dataSecretsAST.td} -v -ifl ${pathFilesToSign} -kvm`
+  } else {
+    command = `${azureSignToolAssemblyFullPath} sign -du ${dataSecretsAST.du} -fd ${dataSecretsAST.fd} -kvu ${dataSecretsAST.kvu} -kvc ${dataSecretsAST.kvc} -tr ${dataSecretsAST.tr} -td ${dataSecretsAST.td} -v -ifl ${pathFilesToSign} -kvi ${dataSecretsAST.kvi}  -kvs ${dataSecretsAST.kvs}`
+  }
+
   console.log(`command:${command}`)
   await executeCliCommand('dotnet', `${command}`)
 }
