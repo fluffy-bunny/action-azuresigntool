@@ -5,11 +5,20 @@ on: # rebuild any PRs and main branch changes
     branches:
       - master
       - 'releases/*'
+  repository_dispatch:
+    types: [my-event]
 env:
   AZURE_PATH: '.'    # set this to the path to your web app project, defaults to the repository root
   DOTNET_VERSION: '3.1.102'              # set this to the dotnet version to use
 
 jobs:
+  myEvent:
+    if: github.event.action == 'my-event'
+    runs-on: windows-latest
+    steps:
+      - run: echo "Hello From myEvent...doing ABC" |
+             echo "Hello From myEvent...doing DEF"
+
   build: # make sure build/ci work properly
     runs-on: windows-latest
     steps:
