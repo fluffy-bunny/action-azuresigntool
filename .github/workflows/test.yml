@@ -16,8 +16,13 @@ jobs:
   myEvent:
     runs-on: windows-latest
     steps:
-      - run: echo "Hello From myEvent...doing ABC" |
-             echo "Hello From myEvent...doing DEF"
+      - name: my-event step 1
+        shell: pwsh
+        run:  |
+        pushd './${{ env.AZURE_PATH }}'
+        $a = ($pwd).path
+        echo "a:"$a
+        popd
 
   build: # make sure build/ci work properly
     runs-on: windows-latest
