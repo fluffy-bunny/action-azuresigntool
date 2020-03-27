@@ -63,7 +63,7 @@ jobs:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
     - name: Recursive File Query by Extension
-      uses: ghstahl/github-action-filequery@v0.1dev
+      uses: fluffy-bunny/action-filequery@v0.1dev
       with: 
         milliseconds: 1000
         folder: files
