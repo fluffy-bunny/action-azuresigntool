@@ -101,7 +101,22 @@ See the [actions tab](https://github.com/actions/javascript-action/actions) for 
 After testing you can [create a v1 tag](https://github.com/actions/toolkit/blob/master/docs/action-versioning.md) to reference the stable and latest V1 action
 
 ## Repo Secrets
+[AzureSignTool Command](https://github.com/fluffy-bunny/AzureSignTool)  
 ### AZURE_SIGN_TOOL_CREDENTIALS
+#### Managed Identity (Prefered)  
+
+```json
+{
+	"du": "https://vcsjones.com",
+	"fd": "sha384",
+	"kvu": "https://my-vault.vault.azure.net",
+	"kvc": "my-key-name",
+	"tr": "http://timestamp.digicert.com",
+  "td": "sha384",
+  "kvm": true
+}
+```
+#### Client Credentials  
 ```json
 {
 	"du": "https://vcsjones.com",
@@ -111,6 +126,7 @@ After testing you can [create a v1 tag](https://github.com/actions/toolkit/blob/
 	"kvs": "<token>",
 	"kvc": "my-key-name",
 	"tr": "http://timestamp.digicert.com",
-	"td": "sha384"
+  "td": "sha384",
+  "kvm": false
 }
 ```

@@ -68,8 +68,11 @@ async function signFiles(): Promise<void> {
   let command: string
   const kvm = secretsAST.getSecret('$.kvm', false)
   if (kvm) {
+    // kvm == Use ManagedIdentity
+    core.info(`Signing using Managed Identity.`)
     command = `${azureSignToolAssemblyFullPath} sign -du ${dataSecretsAST.du} -fd ${dataSecretsAST.fd} -kvu ${dataSecretsAST.kvu} -kvc ${dataSecretsAST.kvc} -tr ${dataSecretsAST.tr} -td ${dataSecretsAST.td} -v -ifl ${pathFilesToSign} -kvm`
   } else {
+    core.info(`Signing using client_credentials.`)
     command = `${azureSignToolAssemblyFullPath} sign -du ${dataSecretsAST.du} -fd ${dataSecretsAST.fd} -kvu ${dataSecretsAST.kvu} -kvc ${dataSecretsAST.kvc} -tr ${dataSecretsAST.tr} -td ${dataSecretsAST.td} -v -ifl ${pathFilesToSign} -kvi ${dataSecretsAST.kvi}  -kvs ${dataSecretsAST.kvs}`
   }
 
