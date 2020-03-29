@@ -71,12 +71,9 @@ jobs:
     - name: This Action
       uses: ./
       with: 
-        milliseconds: 1000
-        folder: 'files'
-        recursive: true
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
         azure_sign_tool_credentials: ${{ secrets.AZURE_SIGN_TOOL_CREDENTIALS_MANAGED_IDENTITY }}
         azure_sign_tool_assembly: ./tools/AzureSignTool-DEV/netcoreapp2.1/any/AzureSignTool.dll
+        files_to_sign: files/files-to-sign.txt
 
     - name: upload-artifact
       uses: actions/upload-artifact@v1
@@ -84,13 +81,7 @@ jobs:
         name: signed-files
         path: files
 
-    - name: 'Install AzureSignTool'
-      shell: pwsh
-      run: |
-        pushd './${{ env.AZURE_PATH }}'
-        $a = ($pwd).path
-        echo "a:"$a
-        popd
+
 
 
          

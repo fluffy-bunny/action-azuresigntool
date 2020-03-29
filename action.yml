@@ -2,10 +2,6 @@ name: 'AzureSignTool'
 description: 'An action that calls: https://github.com/fluffy-bunny/AzureSignTool'
 author: 'Your name or organization here'
 inputs:
-  
-  myInput:              
-    description: 'input description here'
-    default: 'default value if applicable'
 
   azure_sign_tool_credentials:              
     description: 'If using client_credentials, please pull this from secrets.  If using Managed Identity then this can be in the clear'
@@ -16,16 +12,8 @@ inputs:
     default: ''
 
   files_to_sign:              
-    description: 'Takes Presidence: Path to the <files_to_sign.txt>. i.e. ./files/files_to_sign.txt'
+    description: 'Path to the <files_to_sign.txt>. i.e. files/files-to-sign.txt'
     default: ''
-
-  folder:              
-    description: '[Required: only if files_to_sign is missing] Path to the folder. i.e. ./files'
-    default: ''
-
-  recursive:              
-    description: '[Required: only if files_to_sign is missing] recursive find of the folder. i.e. true'
-    default: 'false'
 
 runs:
   using: 'node12'
