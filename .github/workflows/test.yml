@@ -63,11 +63,11 @@ jobs:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
     - name: Recursive File Query by Extension
-      uses: fluffy-bunny/action-filequery@v0.1dev
+      uses: fluffy-bunny/action-filequery@v0.2dev
       with: 
-        milliseconds: 1000
         folder: files
         outputFile: 'files/files-to-sign.txt'
+
     - name: This Action
       uses: ./
       with: 
