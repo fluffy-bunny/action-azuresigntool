@@ -94,15 +94,17 @@ jobs:
       shell: bash
       run: |
         ./pre-commit.sh
+        preCommitCode=$?
+        echo "preCommitCode=$preCommitCode"
         echo "::set-output name=commitSucess::false"
-        if [ $? -eq 0 ]
+        if [ $preCommitCode -eq 0 ]
         then
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git commit -m "Add changes" -a
           echo "::set-output name=commitSucess::true"
         fi
-
+        exit 0
 
     - name: Push changes
       uses: ad-m/github-push-action@master
