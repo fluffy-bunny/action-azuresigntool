@@ -92,12 +92,20 @@ jobs:
     
     - name: Commit files
       run: |
-        git config --local user.email "action@github.com"
-        git config --local user.name "GitHub Action"
-        git commit -m "Add changes" -a
+        ./pre-commit.sh
+        echo "::set-output name=commit-sucess::false"
+        if [ $? -eq 0 ]
+        then
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git commit -m "Add changes" -a
+          echo "::set-output name=commit-sucess::true"
+        fi
+
 
     - name: Push changes
       uses: ad-m/github-push-action@master
+      if: ${{ steps.step_one.outputs.commit-sucess }}
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }} 
 
