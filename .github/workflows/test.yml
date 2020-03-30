@@ -91,21 +91,22 @@ jobs:
         git add dist/\\*    
     
     - name: Commit files
+      shell: bash
       run: |
         ./pre-commit.sh
-        echo "::set-output name=commit-sucess::false"
+        echo "::set-output name=commitSucess::false"
         if [ $? -eq 0 ]
         then
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git commit -m "Add changes" -a
-          echo "::set-output name=commit-sucess::true"
+          echo "::set-output name=commitSucess::true"
         fi
 
 
     - name: Push changes
       uses: ad-m/github-push-action@master
-      if: ${{ steps.step_one.outputs.commit-sucess }}
+      if: ${{ steps.step_one.outputs.commitSucess }}
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }} 
 
