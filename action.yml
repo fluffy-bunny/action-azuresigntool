@@ -1,8 +1,12 @@
 name: 'AzureSignTool'
 description: 'An action that calls: https://github.com/fluffy-bunny/AzureSignTool'
-author: 'Your name or organization here'
-inputs:
+author: 'Fluffy Bunny'
 
+branding:
+  icon: 'file'  
+  color: 'yellow'
+  
+inputs:
   azure_sign_tool_credentials:              
     description: 'If using client_credentials, please pull this from secrets.  If using Managed Identity then this can be in the clear'
     default: ''
