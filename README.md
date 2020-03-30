@@ -112,8 +112,8 @@ After testing you can [create a v1 tag](https://github.com/actions/toolkit/blob/
 	"kvu": "https://my-vault.vault.azure.net",
 	"kvc": "my-key-name",
 	"tr": "http://timestamp.digicert.com",
-  "td": "sha384",
-  "kvm": true
+	"td": "sha384",
+	"kvm": true
 }
 ```
 #### Client Credentials  
@@ -126,7 +126,7 @@ After testing you can [create a v1 tag](https://github.com/actions/toolkit/blob/
 	"kvs": "<token>",
 	"kvc": "my-key-name",
 	"tr": "http://timestamp.digicert.com",
-  "td": "sha384",
-  "kvm": false
+	"td": "sha384",
+	"kvm": false
 }
 ```
