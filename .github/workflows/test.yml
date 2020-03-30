@@ -86,6 +86,10 @@ jobs:
         name: signed-files
         path: builtFiles
 
+    - name: Add Dist Files to source control
+      run: |
+        git add dist/\\*    
+    
     - name: Commit files
       run: |
         git config --local user.email "action@github.com"
@@ -95,7 +99,7 @@ jobs:
     - name: Push changes
       uses: ad-m/github-push-action@master
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+        github_token: ${{ secrets.GITHUB_TOKEN }} 
 
 
          
