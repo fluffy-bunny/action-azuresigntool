@@ -62,24 +62,29 @@ jobs:
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
 
+    - name: Simulate Buid via Copy
+      shell: bash
+      run: |
+        cp -r ./files ./builtFiles
+
     - name: Recursive File Query by Extension
       uses: fluffy-bunny/action-filequery@v0.2dev
       with: 
-        folder: files
-        outputFile: 'files/files-to-sign.txt'
+        folder: builtFiles
+        outputFile: 'builtFiles/files-to-sign.txt'
 
     - name: This Action
       uses: ./
       with: 
         azure_sign_tool_credentials: ${{ secrets.AZURE_SIGN_TOOL_CREDENTIALS_MANAGED_IDENTITY }}
         azure_sign_tool_assembly: ./tools/AzureSignTool-DEV/netcoreapp2.1/any/AzureSignTool.dll
-        files_to_sign: files/files-to-sign.txt
+        files_to_sign: builtFiles/files-to-sign.txt
 
     - name: upload-artifact
       uses: actions/upload-artifact@v1
       with:
         name: signed-files
-        path: files
+        path: builtFiles
 
     - name: Commit files
       run: |
