@@ -93,7 +93,7 @@ jobs:
     - name: Commit files
       shell: bash
       run: |
-        ./pre-commit.sh
+        tmp=$(./pre-commit.sh)
         preCommitCode=$?
         echo "preCommitCode=$preCommitCode"
         echo "::set-output name=commitSucess::false"
