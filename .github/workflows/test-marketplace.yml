@@ -1,0 +1,60 @@
+name: "Test MarketPlace"
+on:
+  watch:
+    types: [started]
+
+env:
+  AZURE_PATH: '.'    # set this to the path to your web app project, defaults to the repository root
+  DOTNET_VERSION: '3.1.201'              # set this to the dotnet version to use
+
+jobs:
+  test: # make sure the action works on a clean machine without building
+    if: github.actor == github.event.repository.owner.login
+    runs-on: windows-latest
+    steps:
+    
+    - name: 'az login'
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    - name: Action Checkout
+      uses: actions/checkout@v1
+
+    - name: download-artifact from build
+      uses: actions/download-artifact@v1
+      with:
+        name: my-artifact
+        path: dist
+
+    - name: Setup DotNet ${{ env.DOTNET_VERSION }} Environment
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: Simulate Buid via Copy
+      shell: bash
+      run: |
+        cp -r ./files ./builtFiles
+
+    - name: Recursive File Query by Extension
+      uses: fluffy-bunny/action-filequery@v0.2dev
+      with: 
+        folder: builtFiles
+        outputFile: 'builtFiles/files-to-sign.txt'
+
+    - name: AzureSignTool
+      uses: fluffy-bunny/action-azuresigntool@v0.1dev
+      with: 
+        azure_sign_tool_credentials: ${{ secrets.AZURE_SIGN_TOOL_CREDENTIALS_MANAGED_IDENTITY }}
+        azure_sign_tool_assembly: ./tools/AzureSignTool-DEV/netcoreapp2.1/any/AzureSignTool.dll
+        files_to_sign: builtFiles/files-to-sign.txt
+
+    - name: upload-artifact
+      uses: actions/upload-artifact@v1
+      with:
+        name: signed-files
+        path: builtFiles
+
+
+         
