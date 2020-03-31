@@ -94,18 +94,23 @@ jobs:
       shell: bash
       run: |
         counter=0
-        while read -r line; do
-          (( counter+=1 ))
-          echo "$counter: $line"
-        done < <(git diff --name-only)
+        FILES=$(git diff --name-only)
+        for FILE in $FILES
+        do
+            counter=$(( $counter + 1 ))
+            echo "$counter:$FILE"
+        done
         echo $counter
 
-        echo "::set-output name=commitSucess::false"
         if [[ $counter -gt 0 ]]; then
+          echo "$counter files being commited...."
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git commit -m "Add changes" -a
           echo "::set-output name=commitSucess::true"
+        else
+          echo "Nothing to commit...."
+          echo "::set-output name=commitSucess::false"
         fi
 
 
