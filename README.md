@@ -1,108 +1,24 @@
-<p align="center">
-  <a href="https://github.com/actions/typescript-action/actions"><img alt="typescript-action status" src="https://github.com/actions/typescript-action/workflows/build-test/badge.svg"></a>
-</p>
+# Based on the Template: Create a JavaScript Action using TypeScript
+[actions/typescript-action](https://github.com/actions/typescript-action)
 
-# Create a JavaScript Action using TypeScript
+## AzureSignTool, the fluffy-bunny way
+As of this writing the original AzureSignTool has not released a managed identity version.  Once it does, my forked version will be deleted.  
+[AzureSignTool CLI](https://github.com/fluffy-bunny/AzureSignTool)  
 
-Use this template to bootstrap the creation of a JavaScript action.:rocket:
+Also, I am hoping that the AST-CLI will eventually post a prebuilt binaries, as I found that doing an install was taking to much time.  I checked in the AzureSignTool.dll and all its dependencies into my repo and just sync it.  
 
-This template includes compilication support, tests, a validation workflow, publishing, and versioning guidance.  
+In short, this action set out to expose only the necessary command lines I was using.  So there isn't a one to one inputs that this action accepts vs the AzureSignTool cli.
 
-If you are new, there's also a simpler introduction.  See the [Hello World JavaScript Action](https://github.com/actions/hello-world-javascript-action)
-
-## Create an action from this template
-
-Click the `Use this Template` and provide the new repo details for your action
-
-## Code in Master
-
-Install the dependencies  
-```bash
-$ npm install
-```
-
-Build the typescript and package it for distribution
-```bash
-$ npm run build && npm run pack
-```
-
-Run the tests :heavy_check_mark:  
-```bash
-$ npm test
-
- PASS  ./index.test.js
-  ✓ throws invalid number (3ms)
-  ✓ wait 500 ms (504ms)
-  ✓ test runs (95ms)
-
-...
-```
-
-## Change action.yml
-
-The action.yml contains defines the inputs and output for your action.
-
-Update the action.yml with your name, description, inputs and outputs for your action.
-
-See the [documentation](https://help.github.com/en/articles/metadata-syntax-for-github-actions)
-
-## Change the Code
-
-Most toolkit and CI/CD operations involve async operations so the action is run in an async function.
-
-```javascript
-import * as core from '@actions/core';
-...
-
-async function run() {
-  try { 
-      ...
-  } 
-  catch (error) {
-    core.setFailed(error.message);
-  }
-}
-
-run()
-```
-
-See the [toolkit documentation](https://github.com/actions/toolkit/blob/master/README.md#packages) for the various packages.
-
-## Publish to a distribution branch
-
-Actions are run from GitHub repos so we will checkin the packed dist folder. 
-
-Then run [ncc](https://github.com/zeit/ncc) and push the results:
-```bash
-$ npm run pack
-$ git add dist
-$ git commit -a -m "prod dependencies"
-$ git push origin releases/v1
-```
-
-Your action is now published! :rocket: 
-
-See the [versioning documentation](https://github.com/actions/toolkit/blob/master/docs/action-versioning.md)
-
-## Validate
-
-You can now validate the action by referencing `./` in a workflow in your repo (see [test.yml](.github/workflows/test.yml)])
-
-```yaml
-uses: ./
-with:
-  milliseconds: 1000
-```
-
-See the [actions tab](https://github.com/actions/javascript-action/actions) for runs of this action! :rocket:
-
-## Usage:
-
-After testing you can [create a v1 tag](https://github.com/actions/toolkit/blob/master/docs/action-versioning.md) to reference the stable and latest V1 action
+I only support `"--input-file-list"` as as way to tell the AST-CLI what files to sign.  This is done because of efficiency.  As such, I rely on another custom action to build the file list for me.   
+[Recursive File Query by Extension](https://github.com/marketplace/actions/recursive-file-query-by-extension)  
 
 ## Repo Secrets
-[AzureSignTool Command](https://github.com/fluffy-bunny/AzureSignTool)  
-### AZURE_SIGN_TOOL_CREDENTIALS
+
+### AZURE_CREDENTIALS (PREFERED - OPTIONAL)
+[Azure Login](https://github.com/marketplace/actions/azure-login)  
+Azure Managed Identity is the prefered way of using the tool, so please follow those instructions in signing into Azure.  
+
+### AZURE_SIGN_TOOL_CREDENTIALS (REQUIRED)
 #### Managed Identity (Prefered)  
 
 ```json
@@ -116,7 +32,10 @@ After testing you can [create a v1 tag](https://github.com/actions/toolkit/blob/
 	"kvm": true
 }
 ```
-#### Client Credentials  
+Here we don't see the `"kvi"` and `"kvs"` entries.  We do see the flag `"kvm":true`.  
+Given you tolerance for secrets, this entry could be in yml in the clear.  
+
+#### Client Credentials  (Azure Service Principal)  
 ```json
 {
 	"du": "https://vcsjones.com",
@@ -129,4 +48,26 @@ After testing you can [create a v1 tag](https://github.com/actions/toolkit/blob/
 	"td": "sha384",
 	"kvm": false
 }
+```
+As oposed to the Managed Identity approach, this one needs `"client_credentials"` in the form of `"kvi"` and `"kvs"` entries.  
+`"kvm":false` is required.
+
+```
+- name: 'az login'
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+- name: Recursive File Query by Extension
+      uses: fluffy-bunny/action-filequery@v0.2dev
+      with: 
+        folder: builtFiles
+        outputFile: 'builtFiles/files-to-sign.txt'
+
+- name: This Action
+      uses: ./
+      with: 
+        azure_sign_tool_credentials: ${{ secrets.AZURE_SIGN_TOOL_CREDENTIALS }}
+        azure_sign_tool_assembly: ./tools/AzureSignTool-DEV/netcoreapp2.1/any/AzureSignTool.dll
+        files_to_sign: builtFiles/files-to-sign.txt
 ```
