@@ -100,7 +100,6 @@ jobs:
             counter=$(( $counter + 1 ))
             echo "$counter:$FILE"
         done
-        echo $counter
 
         if [[ $counter -gt 0 ]]; then
           echo "$counter files being commited...."
