@@ -52,6 +52,7 @@ Given you tolerance for secrets, this entry could be in yml in the clear.
 As oposed to the Managed Identity approach, this one needs `"client_credentials"` in the form of `"kvi"` and `"kvs"` entries.  
 `"kvm":false` is required.
 
+[Reference YML](.github/workflows/test-marketplace.yml) 
 ```
 - name: 'az login'
       uses: azure/login@v1
@@ -64,8 +65,8 @@ As oposed to the Managed Identity approach, this one needs `"client_credentials"
         folder: builtFiles
         outputFile: 'builtFiles/files-to-sign.txt'
 
-- name: This Action
-      uses: ./
+- name: AzureSignTool
+      uses: fluffy-bunny/action-azuresigntool@v0.1dev
       with: 
         azure_sign_tool_credentials: ${{ secrets.AZURE_SIGN_TOOL_CREDENTIALS }}
         azure_sign_tool_assembly: ./tools/AzureSignTool-DEV/netcoreapp2.1/any/AzureSignTool.dll
