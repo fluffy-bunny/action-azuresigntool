@@ -11,9 +11,11 @@ jobs:
   whoami:
     runs-on: windows-latest
     steps:
-      - shell: bash
-        run: |
-          echo $github.actor
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
+        
   test: # make sure the action works on a clean machine without building
     if: github.actor == github.event.repository.owner.login
     runs-on: windows-latest
