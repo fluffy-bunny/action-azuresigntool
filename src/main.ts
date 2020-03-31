@@ -36,8 +36,6 @@ async function signFiles(): Promise<void> {
   )
   console.log(`azureSignToolCredentials:${azureSignToolCredentials}.`)
   const secretsAST = new SecretParser(azureSignToolCredentials, FormatType.JSON)
-  const du = secretsAST.getSecret('$.du', false)
-  console.log(`du:${du}.`)
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let dataSecretsAST: any = {}
