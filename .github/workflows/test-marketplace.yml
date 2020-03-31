@@ -8,6 +8,12 @@ env:
   DOTNET_VERSION: '3.1.201'              # set this to the dotnet version to use
 
 jobs:
+  whoami:
+    runs-on: windows-latest
+    steps:
+      - shell: bash
+        run: |
+          echo $github.actor
   test: # make sure the action works on a clean machine without building
     if: github.actor == github.event.repository.owner.login
     runs-on: windows-latest
