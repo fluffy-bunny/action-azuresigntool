@@ -1,13 +1,13 @@
-# Based on the Template: Create a JavaScript Action using TypeScript
+# AzureSignTool, the fluffy-bunny way
+Based on the Template: Create a JavaScript Action using TypeScript
 [actions/typescript-action](https://github.com/actions/typescript-action)
 
-## AzureSignTool, the fluffy-bunny way
 As of this writing the original AzureSignTool has not released a managed identity version.  Once it does, my forked version will be deleted.  
 [AzureSignTool CLI](https://github.com/fluffy-bunny/AzureSignTool)  
 
-Also, I am hoping that the AST-CLI will eventually post a prebuilt binaries, as I found that doing an install was taking to much time.  I checked in the AzureSignTool.dll and all its dependencies into my repo and just sync it.  
+Also, I am hoping that the AST-CLI will eventually post a prebuilt binaries, as I found that doing an install was taking too much time.  I checked in the AzureSignTool.dll and all its dependencies into my repo and just sync it.  
 
-In short, this action set out to expose only the necessary command lines I was using.  So there isn't a one to one inputs that this action accepts vs the AzureSignTool cli.
+In short, this action set out to expose only the necessary command lines I was using.  So there isn't one to one inputs that this action accepts vs the AzureSignTool cli.
 
 I only support `"--input-file-list"` as as way to tell the AST-CLI what files to sign.  This is done because of efficiency.  As such, I rely on another custom action to build the file list for me.   
 [Recursive File Query by Extension](https://github.com/marketplace/actions/recursive-file-query-by-extension)  
