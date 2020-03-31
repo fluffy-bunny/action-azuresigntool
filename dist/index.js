@@ -5645,8 +5645,6 @@ function signFiles() {
         const azureSignToolCredentials = core.getInput('azure_sign_tool_credentials', { required: true });
         console.log(`azureSignToolCredentials:${azureSignToolCredentials}.`);
         const secretsAST = new secret_parser_1.SecretParser(azureSignToolCredentials, secret_parser_1.FormatType.JSON);
-        const du = secretsAST.getSecret('$.du', false);
-        console.log(`du:${du}.`);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         let dataSecretsAST = {};
         for (const prop of astProperties) {
