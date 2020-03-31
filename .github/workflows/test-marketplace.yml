@@ -28,13 +28,7 @@ jobs:
 
     - name: Action Checkout
       uses: actions/checkout@v1
-
-    - name: download-artifact from build
-      uses: actions/download-artifact@v1
-      with:
-        name: my-artifact
-        path: dist
-
+      
     - name: Setup DotNet ${{ env.DOTNET_VERSION }} Environment
       uses: actions/setup-dotnet@v1
       with:
