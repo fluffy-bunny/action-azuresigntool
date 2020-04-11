@@ -1,3 +1,4 @@
+![fluffy-bunny-banner](https://raw.githubusercontent.com/fluffy-bunny/static-assets/master/fluffy-bunny-banner.png)  
 # AzureSignTool, the fluffy-bunny way
 Based on the Template: Create a JavaScript Action using TypeScript
 [actions/typescript-action](https://github.com/actions/typescript-action)
