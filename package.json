@@ -31,7 +31,7 @@
     "@actions/io": "^1.0.2",
     "actions-secret-parser": "^1.0.3",
     "jsonpath": "^1.0.2",
-    "xmldom": "^0.3.0",
+    "xmldom": "^0.5.0",
     "xpath": "0.0.27"
   },
   "devDependencies": {
